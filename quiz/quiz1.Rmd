@@ -1,0 +1,108 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question 1
+A New York City cab was involved in a hit-and-run accident last night. Five witnesses reported the incident, four of whom said that the cab was green and one of whom said that the cab was yellow. Assume each witness correctly identifies the color of a cab with probability 2/3. It is known that 85% of registered cabs in New York City are yellow and 15% are green. Based on this information, what is the probability that the cab was green?
+
+```{r q1}
+pc<-2/3
+Hy<-0.85
+Hg<-0.15
+
+pD_Hg=dbinom(4,5,2/3)
+pD_Hy=dbinom(1,5,2/3)
+
+pD=pD_Hg*Hg+pD_Hy*Hy
+
+prior=Hg
+
+likelihood=pD_Hg/pD
+
+posterior=likelihood*prior
+
+posterior
+```
+### Question 3
+You go to Las Vegas and sit down at a slot machine. You are told by a highly reliable source that, for each spin, the probability of hitting the jackpot is either 1 in 1,000 or 1 in 1,000,000, but you have no prior information to tell you which of the two it is. You play ten times, but do not win the jackpot. What is the posterior probability that the true odds of hitting the jackpot are 1 in 1,000?
+
+```{r q3}
+H1=0.5
+H2=0.5
+
+pDH1=(0.999)^10
+pDH2=(0.999999)^10
+pD=pDH1*H1+pDH2*(H2)
+
+pH1D=pDH1*H1/pD
+pH1D
+```
+### Question 7
+Hearing about your brilliant success in working with M&Ms, Mars Inc. transfers you over to the Skittles department. They recently have had complaints about tropical Skittles being mixed in with original Skittles. You decide to conduct a frequentist analysis. If the findings suggest that more than 1% of sampled supposedly original skittles are actually tropical, you will recommend action to be taken and the production process to be corrected. You will use a significance level of α=0.1. You randomly sample 300 supposedly original skittles, and you find that five of them are tropical. What should be the conclusion of your hypothesis test? Hint- H0:p=0.01 and H1:p>0.01.
+
+```{r q7}
+tropical=c(0,1,2,3,4)
+1-sum(dbinom(tropical,300,0.01))
+```
+### Question 8  
+You decide to conduct a statistical analysis of a lottery to determine how many possible lottery combinations there were. If there are N possible lottery combinations, each person has a 1/N chance of winning. Suppose that 413,271,201 people played the lottery and three people won. You are told that the number of lottery combinations is a multiple of 100 million and less than 1 billion, but have no other prior information to go on. What is the posterior probability that there were fewer than 600 million lottery combinations?
+
+### Q8
+```{r q8}
+N=seq(from=1e8,to=9e8, by=1e8)
+p=1/N
+players=413271201
+prior=c(rep(1/9,9))
+likelihood=dbinom(3,size=players,prob=p)
+numerator<-likelihood*prior
+denominator<-sum(numerator)
+posterior<-numerator/denominator
+posterior
+sum(posterior[1:5])
+```
+ 
+### Question 9
+You are testing dice for a casino to make sure that sixes do not come up more frequently than expected. Because you do not want to manually roll dice all day, you design a machine to roll a die repeatedly and record the number of sixes that come face up. In order to do a Bayesian analysis to test the hypothesis that p = 1/6 versus p = .175 , you set the machine to roll the die 6000 times. When you come back at the end of the day, you discover to your horror that the machine was unable to count higher than 999. The machine says that 999 sixes occurred. Given a prior probability of 0.8 placed on the hypothesis p = 1/6 , what is the posterior probability that the die is fair, given the censored data? Hint - to find the probability that at least x sixes occurred in N trials with proportion p (which is the likelihood in this problem), use the R command :
+
+```{r q9}
+pH1=0.8 #p=1/6
+pH2=0.2 #p=0.175
+
+pDH1=1-pbinom(998,6000,1/6)
+pDH2=1-pbinom(998,6000,0.175)
+
+pD=pDH1*pH1+pDH2*pH2
+
+pH1D=pDH1*pH1/pD
+pH1D
+```
+
+### Question 8 (2)
+In the NFL, a professional American football league, there are 32 teams, of which 12 make the playoffs. In a typical season, 20 teams (the ones that don’t make the playoffs) play 16 games, 4 teams play 17 games, 6 teams play 18 games, and 2 teams play 19 games. At the beginning of each game, a coin is flipped to determine who gets the football first. You are told that an unknown team won ten of its coin flips last season. Given this information, what is the posterior probability that the team did not make the playoffs (i.e. played 16 games)?
+
+```{r q8v2}
+prior=c(5/8,1/8,3/16,1/16)
+likelihood=dbinom(10,32,0.5)
+numerator<-likelihood*prior
+denominator<-sum(numerator)
+posterior<-numerator/denominator
+posterior
+```
+### Question 9 (2)
+```{r q8}
+N=c(1,2,3)
+prior=c(rep(1/3,3))
+likelihood=dpois(10,N)
+numerator<-likelihood*prior
+denominator<-sum(numerator)
+posterior<-numerator/denominator
+posterior[3]
+```
+
+### Question 1 (2)
+You draw two balls from one of three possible large urns, labelled A, B, and C. Urn A has 1/2 blue balls, 1/3 green balls, and 1/6 red balls. Urn B has 1/6 blue balls, 1/2 green balls, and 1/3 red balls. Urn C has 1/3 blue balls, 1/6 green balls, and 1/2 red balls. With no prior information about which urn your are drawing from, you draw one red ball and one blue ball. What is the probability that you drew from urn C?
