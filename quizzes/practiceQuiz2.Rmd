@@ -1,0 +1,47 @@
+---
+title: "Practice Quiz 2"
+author: "mbh"
+date: "18/06/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question 2
+Which of the following distributions would be a good choice of prior to use if you wanted to determine if a coin is fair when you have a strong belief that the coin is fair? (Assume a model where we call heads a success and tails a failure).
+
+```{r q2}
+library(rafalib)
+mypar(3,2)
+x<-seq(0,1,by=0.01)
+as<-c(10,9,1,10,50)
+bs<-c(10,1,1,90,50)
+for (i in 1:length(as)){
+    y<-dbeta(x,as[i],bs[i])
+    plot(x,y,type="l",main=paste("a=",as[i],", b=",bs[i]))  
+}
+
+```
+
+### Question 4
+Suppose that you sample 24 M&Ms from a bag and find that 3 of them are yellow. Assuming that you place a uniform Beta(1,1) prior on the proportion of yellow M&Ms p, what is the posterior probability that p<0.2 ?
+
+```{r}
+n<-24
+k<-3
+alpha<-1
+beta<-1
+x<-seq(0,1,by=0.01)
+y<-dbeta(x,1+k,1+n-k)
+plot(x,y,type="l")
+pbeta(0.2,alpha+k,beta+n-k)
+```
+### Question 5
+Suppose you are given a coin and told that the coin is either biased towards heads (p = 0.6) or biased towards tails (p = 0.4). Since you have no prior knowledge about the bias of the coin, you place a prior probability of 0.5 on the outcome that the coin is biased towards heads. You flip the coin twice and it comes up tails both times. What is the posterior probability that your next two flips will be heads?
+
+```{r}
+
+```
+

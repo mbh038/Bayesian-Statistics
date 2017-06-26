@@ -1,0 +1,34 @@
+---
+title: "Practice Quiz 1"
+author: "mbh"
+date: "18/06/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question 1
+
+Julia is having an outdoor wedding ceremony tomorrow. In recent years, it has rained on average 50 days per year. Unfortunately, the meteorologist has predicted rain for her wedding day. When it rains, the meteorologist will have correctly predicted it 80 percent of the time. When it does not rain, the meteorologist will have incorrectly predicted rain 30 percent of the time. Given this information, what is the probability that it rains on Julia's wedding day?
+
+```{r q1}
+pR<-50/365
+pRR<-0.8
+pRD<-0.3
+
+0.8*50/365/(0.8*50/365+0.3*315/365)
+```
+
+### Question 5
+
+You are told that a coin has either a strong tails bias (p = 0.2), a weak tails bias (p = 0.4 ), no bias (p = 0.5), a weak heads bias ( p = 0.6), or a strong heads bias ( p = 0.8). You assign a prior probability of 1/2 that the coin is fair and distribute the remaining 1/2 prior probability equally over the other four possible scenarios. You flip the coin three times and it comes up heads all three times. What is the posterior probability that the coin is biased towards heads?
+
+```{r q5}
+prior<-c(0.125,0.125,0.5,0.125,0.125)
+bias<-c(0.2,0.4,0.5,0.6,0.8)
+pHHH<-bias^3*prior
+pHeadsbias<-sum(pHHH[4:5]/sum(pHHH))
+pHeadsbias
+```

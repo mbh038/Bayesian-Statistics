@@ -1,0 +1,111 @@
+---
+title: "Quiz 2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question 2
+Below are plots of the prior distribution for a parameter $\theta$ and the likelihood as a function of $\theta$ based on 10 observed data points.
+
+```{r q2}
+x<-seq(0,10,by=0.01)
+prior<-dgamma(x,2,1)
+likelihood<-dnorm(x,4,0.5)/1e6
+posterior<-prior*likelihood
+plot(x,likelihood,type="l",col="red",ylim=c(0,.000001))
+lines(x,posterior,col="black")
+lines(x,prior,col="blue")
+
+
+```
+### Question 3
+You are trying to model the number of fireworks that go off per minute during a fireworks show. You decide to model this with a Poisson distribution with rate λ, imposing a Gamma prior on λ for conjugacy. You want the prior to have mean equal to 3 and standard deviation equal to 1. Which of the following priors represents your beliefs?
+
+$k=9$, $\theta=1/3$
+
+### Question 3 (2)
+Which of the following distributions would be a good choice of prior to use if you wanted to determine if a coin is fair when you have a _strong_ belief that the coin is biased towards heads? (Assume a model where we call heads a success and tails a failure).
+
+```{r}
+x<-seq(0,1,by=0.01)
+as<-c(10,50,1,9,90)
+bs<-c(90,50,9,1,10)
+library(rafalib)
+mypar(3,2)
+for (i in 1:5){
+  y=dbeta(x,as[i],bs[i])
+  plot(x,y,type="l",main=paste("a,b=",as[i],bs[i]))
+}
+```
+
+
+### Question 5
+You are hired as a data analyst by politician A. She wants to know the proportion of people in Metrocity who favor her over politician B. From previous poll numbers, you place a Beta(40,60) prior on the proportion. From polling 200 randomly sampled people in Metrocity, you find that 103 people prefer politician A to politician B. What is the posterior distribution of the proportion of voters who favor politician A?
+
+$\alpha->\alpha+x=40+103=143$  
+$\beta->\beta+n-x=60+200-103=157$  
+
+### Question 5 (2)
+You are hired as a data analyst by politician A. She wants to know the proportion of people in Metrocity who favor her over politician B. From previous poll numbers, you place a Beta(40,60) prior on the proportion. From polling 200 randomly sampled people in Metrocity, you find that 103 people prefer politician A to politician B. What is the posterior probability that the majority of people prefer politician A to politican B (i.e. P(p>0.5|data))?
+
+```{r q5}
+1-pbeta(0.5,143,157)
+```
+### Question 7
+Suppose that the number of fish that Hans catches in an hour follows a Poisson distribution with rate $\lambda$. If the prior on $\lambda$ is Gamma(1,1) and Hans catches no fish in five hours, what is the posterior distribution for $\lambda$?
+
+```{r q7}
+k<-1
+sumX<-0
+kStar<-k+sumX
+
+theta<-1
+n<-5 # number of hours (each observation is one hour)
+thetaStar<-theta/(n*theta+1)
+
+c(kStar,thetaStar) #posterior gamma distribution
+```
+
+
+### Question 8
+Suppose that a miner finds a gold nugget and wants to know the weight of the nugget in order to assess its value. The miner believes the nugget to be roughly 200 grams, although she is uncertain about this quantity, so she puts a standard deviation of 50 grams on her estimate. She weighs the nugget on a scale which is known to weigh items with standard deviation 2 grams. The scale measures the nugget at 149.3 grams. What distribution summarizes the posterior beliefs of the miner?
+
+```{r q8}
+mu<-200 #prior mean
+tau<-50 #prior sd
+sigma<-2 # data sd
+xmean<-149.3 # data mean
+n<-1 # number of measurements
+
+muStar<-(mu*sigma^2+n*xmean*tau^2)/(sigma^2+n*tau^2) #posterior mean
+tauStar<-sqrt((sigma^2*tau^2)/(sigma^2+n*tau^2)) # posterior sd
+c(muStar,tauStar)
+```
+### Question 9 (2)
+A scientist is interested in estimating the average weight of male golden hamsters. They decide to use a Bayesian approach to estimate μ by creating a credible interval using a weakly informative prior. The posterior distribution gives a 95% credible interval spanning 3.3 - 4.0 oz. According to this model, what is the probability that μ does not fall within this range?
+
+Ans: 5%
+
+### Question 10
+Suppose you are given a coin and told that the die is either biased towards heads (p = 0.75 ) or biased towards tails (p = 0.25 ). Since you have no prior knowledge about the bias of the coin, you place a prior probability of 0.5 on the outcome that the coin is biased towards heads. You flip the coin twice and it comes up tails both times. What is the posterior probability that your next flip will be heads?
+
+```{r q10}
+pstar=(1-0.75)^2*0.5/(0.75^2*.5+0.25^2*.5)
+pheadPost=0.75*pstar+(1-pstar)*.25
+pheadPost
+```
+### Question 10 (2)
+Suppose you are given a die and told that the die is either fair or is loaded (it always comes up as a 6). Since most dice are not loaded, you place a prior probability of 0.8 on the outcome that the die is fair. You roll a die and it comes up as a 6. What is the posterior probability that your next roll will also be a 6?
+
+```{r q10}
+pstar<-(1/6)*(8/10)/((1/6)*(8/10)+1*2/10) #post probability that coin is fair
+p6post<-pstar*1/6+(1-pstar)*1
+p6post
+```
+
+
+
+

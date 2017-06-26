@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Quiz 1"
 output: html_document
 ---
 
@@ -86,8 +86,9 @@ pH1D
 In the NFL, a professional American football league, there are 32 teams, of which 12 make the playoffs. In a typical season, 20 teams (the ones that don’t make the playoffs) play 16 games, 4 teams play 17 games, 6 teams play 18 games, and 2 teams play 19 games. At the beginning of each game, a coin is flipped to determine who gets the football first. You are told that an unknown team won ten of its coin flips last season. Given this information, what is the posterior probability that the team did not make the playoffs (i.e. played 16 games)?
 
 ```{r q8v2}
-prior=c(5/8,1/8,3/16,1/16)
-likelihood=dbinom(10,32,0.5)
+prior=c(20/32,4/32,6/32,2/32)
+games=c(16,17,18,19)
+likelihood=dbinom(10,games,0.5)
 numerator<-likelihood*prior
 denominator<-sum(numerator)
 posterior<-numerator/denominator
@@ -106,3 +107,16 @@ posterior[3]
 
 ### Question 1 (2)
 You draw two balls from one of three possible large urns, labelled A, B, and C. Urn A has 1/2 blue balls, 1/3 green balls, and 1/6 red balls. Urn B has 1/6 blue balls, 1/2 green balls, and 1/3 red balls. Urn C has 1/3 blue balls, 1/6 green balls, and 1/2 red balls. With no prior information about which urn your are drawing from, you draw one red ball and one blue ball. What is the probability that you drew from urn C?
+
+```{r q1}
+prior=c(1/3,1/3,1/3)
+likelihoodA=2*(1/2)*(1/6)
+likelihoodB=2*(1/6)*(1/3)
+likelihoodC=2*(1/3)*(1/2)
+likelihoods=c(likelihoodA,likelihoodB,likelihoodC)
+numerator=likelihoods*prior
+denominator<-sum(numerator)
+posterior<-numerator/denominator
+posterior
+
+```

@@ -1,0 +1,89 @@
+---
+title: "Quiz 3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question 1
+For which of the following situations would a 0/1 loss function make the most sense?
+
+Your prediction for the number of bikes sold this year by a local bike shop.  
+Your answer choice on a Coursera multiple choice quiz.  
+__Your prediction as to whether it will rain tomorrow.__  
+Your estimate of the market price of your house.  
+
+### Question 2
+Fill in the blank: Under a __linear loss function__, the summary statistic that minimizes the posterior expected loss is the ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ of the posterior.
+
+Mode  
+Mean  
+__Median__
+
+### Question 3
+You are employed in the Human Resources department of a company and are asked to predict the number of employees that will quit their jobs in the coming year. Based on a Bayesian analysis of historical data, you determine the posterior predictive distribution of the number of quitters to follow a Poisson($\lambda=10$) distribution. Given a __quadratic__ loss function, what is the prediction that minimizes posterior expected loss?
+
+a. 9  
+b. 10  
+c. 11  
+d. Either a or b  
+
+### Question 4
+Suppose that you are trying to decide whether a coin is biased towards heads (p=0.75) or tails (p=0.25). If you decide incorrectly, you incur a loss of 10. Flipping another coin incurs a cost of 1. If your current posterior probability of a head-biased coin is 0.6, should you make the decision now or flip another coin and then decide?
+
+__hypotheses__
+H1: heads bias
+H2: tails bias
+
+__priors__
+p(H1)=0.75
+p(H2)=0.25
+
+__decisions__
+d1: decide now
+d2: flip another coin and then decide
+
+__posteriors__
+p(H1|D)=0.6
+p(H2|d)=0.4
+
+__losses__
+$\begin{aligned}
+L(d_1)=
+  \left\{
+    \begin{array}{l}
+      0 \text{ if coin is heads biased }\implies d_1 \text{ is right}\\
+      w_1=10\text{ if coin is not heads biased }\implies d_1 \text{ is wrong}
+    \end{array}
+  \right.
+\end{aligned}$
+
+$\begin{aligned}
+L(d_2)=
+  \left\{
+    \begin{array}{l}
+      0 \text{ if coin is heads biased }\implies d_1 \text{ is right}\\
+      w_1=10\text{ if coin is not heads biased }\implies d_1 \text{ is wrong}
+    \end{array}
+  \right.
+\end{aligned}$
+
+### Question 6
+Suppose that you are trying to estimate the true proportion p of male births in the United States. Starting with a strong prior (Beta(500,500)) on the proportion, you randomly sample 10,000 birth certificates, observing 5029 males and 4971 females. What is the posterior probability that p is less than or equal to 0.5? (Hint: use function(s) in R to answer this question)
+```{r}
+a<-500
+b<-500
+n<-10000
+x<-5029
+alpha<-a+x
+beta<-b+n-x
+pbeta(0.5,alpha,beta)
+```
+
+
+
+
+
+

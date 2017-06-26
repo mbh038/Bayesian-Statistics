@@ -1,0 +1,303 @@
+---
+title: "Bayes Notes"
+author: "mbh"
+date: "18/06/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Discrete Bayes Rule
+
+$P[A_i|B]=\dfrac{P[B|A_i]P[A_i]}{P[B]}=\dfrac{P[B|A_i]P[A_i]}{\sum_{j=1}^nP[B|A_j]P[A_j]}$
+
+##Continuous Bayes Rule
+
+$\pi^*(p|x)=\dfrac{P(x|p)\pi(p)}{\int^1_0P(x|p)\pi(p)dp}$
+
+## Beta distribution
+
+$f(p)=\dfrac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)+\Gamma(\beta)}p^{\alpha-1}(1-p)^{\beta-1}$
+
+where  
+$0\le p\le1$, $\alpha,\beta>0$  
+$\Gamma(n)=(n-1)!$ - the gamma function
+
+
+
+
+### Conjugacy
+if pdf for prior used with conjugate dist for likelihood, then pdf for posterior wiull come from same families, but with updated parameter values.
+
+### Beta distribution
+defined on iternval 0-1 so useful as pdf for bounded priors eg probability of success in binomial dist.
+
+#### Prior beliefs   
+* Binomial with known $n$ and unknown $p$ 
+* beta pdf $beta(a,b)$  
+
+#### observe
+* $x$ successes in $n$ trials  
+
+#### new belief
+* $beta(\alpha,\beta)=beta(a+x,b+n-x)$
+
+#### Mean  
+$(\alpha,\beta)=\dfrac{\alpha}{\alpha+\beta}$   
+
+#### Variance
+$(\alpha,\beta)=\dfrac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$
+
+#### Symmetric beta distributions: $\alpha = \beta$
+```{r symmetric}
+library(rafalib)
+mypar(3,2)
+x<-seq(0,1,by=0.01)
+as<-c(0.5,1,3,10,50,200)
+bs<-c(0.5,1,3,10,50,200)
+for (i in 1:length(as)){
+    y<-dbeta(x,as[i],bs[i])
+    plot(x,y,type="l",col=i,main=paste("a=b=",as[i]))
+}
+```
+
+### Asymmetric beta distributions: $\alpha \ne \beta$
+```{r asymmetric}
+library(rafalib)
+mypar(3,2)
+as<-c(10,30,50,1,1,1,10,10,10,2,3,5)
+bs<-c(1,1,1,10,30,50,2,3,5,10,10,10)
+for (i in 1:length(as)){
+    y<-dbeta(x,as[i],bs[i])
+    plot(x,y,type="l",col=i,main=paste("a=",as[i],"b=",bs[i]))
+}
+
+```
+
+### Gamma-Poisson conjugate families
+
+data from Poisson  
+prior and posterior from gamma distributions 
+
+#### Probability mass function for Poisson distribution
+
+$\lambda$ is the mean _and_ the variance
+
+$\lambda > 0$  
+
+$P[X=k]=\dfrac{\lambda^k}{k!}\exp(-\lambda)\text{ for }k=1,2,\dots$
+
+### Gamma distribution
+
+Describe continuous non-negative random variables
+
+Parameters for pdf for gamma: shape parameter $k$ and scale parameter $\theta$
+
+
+
+#### Mean  
+
+$k\theta$
+
+#### Variance  
+
+$\theta^2k$
+
+#### New Parameters
+
+If observe Poisson distributed data $x_1, x_2, x_3,\dots x_n$, then updates parameters for the posterior are:
+
+$k^*=k+\sum{x_i}$
+
+$\theta^*=\dfrac{\theta}{n\theta+1}$
+
+### Normal-normal conjugate families
+
+Assume prior on unknown mean $\nu$ is normal, with  
+* mean $\mu$  
+* standard deviation $\tau$  
+Data $x_1,x_2,\dots'x_n$ are independent  
+* come from normal with standard deviation $\sigma$
+
+$\mu^*=\dfrac{\mu\sigma^2+n\bar x\tau^2}{\sigma^2+n\tau^2}$
+
+$\tau^*=\sqrt{\dfrac{\sigma^2\tau^2}{\sigma^2+n\tau^2}}$
+
+## Credible Intervals and Predictive Inference
+
+### Credible Intervals
+
+Frequentist: Given a mean and confidence interval, can only say that 95% of similarly constructed confidence intervals will contain the true mean. _Cannnot_ say "there is a 95% chance that the true mean lies in a given interval around the  point estimate" - either it does, or it does not. True mean is not a random variable.  
+
+Bayesian: Treat true mean as a random variable, so _can_ say" that "there is a 95 (or other number)% chance that the true mean lies in susch and such a _credible_ interval.
+
+Use word _credible_ to distinguish from frequentist _confidence_ interval
+
+95% credible interval is any _L_, _U_ such that posterior probability $p$ is 
+
+$L<p<U=0.95$
+
+Shortest such interval is preferable, will often (always?) be asymmetric.
+
+To find interval bounds $L$ and $U$, have to integrate under posterior probabiility density function.
+
+If density is 
+
+$f(p)$ for $0 \le p \le 1$
+
+then area under this up to x is the cdf:
+
+$F(x)$ for $0 \le x \le 1$
+
+the Bayesian needs to find $L$, $U$ that give the shortest interval $U$-$L$:
+
+$F(L)-F(U)=0.95$
+
+### Predictive Inference
+
+Often, the real goal is in making a prediction of a future value rather than in making an estimate of a parameter.
+
+Predictive inference arises when the goal is not to find a posterior distribution over some parameter, but rather to find a posterior distribution over some random variable that depends on the parameter. 
+
+Specifically, you want to make an inference about a random variable $X$ with probability density function $f(x|\theta)$, where you have some personal probability distribution $\pi(\theta)$ for the $\theta$. 
+
+## Losses and Decision Making
+
+### Losses and Decision Making
+
+Bayesian point estimates, losses and decision making.  
+  
+To a Bayesian, the __posterior distribution__ is the basis of any inference, since it integrates both her prior opinions and knowledge _and_ the new information provided by the data. It also contains everything she believes about the distribution of the unknown parameter of interest.
+
+But the posterior distribution on its own is not always sufficient.  
+
+Sometimes one wants to express one's inference as a __credible interval__ to indicate a range of likely values for the parameter. That would be helpful if you wanted to say that you are 95% certain the probability of an RU-486 pregnancy lies between some number L and some number U.  
+
+And on other occasions, one needs to make a single number guess about the value of the parameter. For example, you might want to declare the average payoff for an insurance claim or tell a patient how much longer she has to live. 
+
+In such cases, the Bayesian perspective leads directly to __decision theory__. And in decision theory, one seeks to minimize one's expected loss.   
+
+Bayesian may make point estimates of unknown parameters. Will choose the point estimate that minimises the loss. Best estimate depends on the kind of loss function one is using.  
+
+How are these best estimates determined?  
+
+|Loss|Best estimate|
+|:--:|:-----------:|
+|linear|median|
+|square|mean|
+|0/1|mode|
+
+### Working with Loss Functions
+
+Car dealership: boss wants to know how many cars you will sell in a month. From distribution of previous data (=posterior distribution), over many months, we have the mean, median and mode of monthly car sales for this period. Given this, suppose our guess is $g=30$
+
+Define the loss function: 
+
+#### $L_0$ 0/1 Loss
+
+$Lo_i(g)=
+\begin{math}
+  \left\{
+    \begin{array}{l}
+      0\\
+      1
+    \end{array}
+  \right.
+\end{math}
+$
+
+Loss =:
+
+0 if guess $=$ actual loss
+1 if guess $\ne$ actual loss
+
+Minimised at the g=_mode_ of the posterior  
+
+#### $L_1:$ Linear Loss
+$L_1(g)=\sum_i{\left|x_i-g\right|}$
+Minimised at g =  _median_ of the posterior
+
+#### $L_2:$ Squared Loss  
+$L_2(g)=\sum_i{(x_i-g)^2}$
+ Minimised at g =  _mean_ of the posterior
+ 
+### Minimising Expected Loss for Decision Making
+
+#### hypotheses:  
+$H_1$: Patient does not have HIV  
+$H_2$: Patient does have HIV
+
+#### decisions
+$d_1$: decide that patient does not have HIV  
+$d_2$: decide that patient does have HIV
+
+#### losses 
+$\begin{aligned}
+L(d_1)=
+  \left\{
+    \begin{array}{l}
+      0 \text{ if patient does not have HIV }\implies d_1 \text{ is right}\\
+      w_1=1000\text{ if patient does have HIV }\implies d_1 \text{ is wrong}
+    \end{array}
+  \right.
+\end{aligned}$
+
+$\begin{aligned}
+L(d_2)=
+  \left\{
+    \begin{array}{l}
+      0 \text{ if patient does have HIV }\implies d_2 \text{ is right}\\
+      w_2=25 \text{ if patient does not have HIV }\implies d_2 \text{ is wrong}
+    \end{array}
+  \right.
+\end{aligned}$
+
+#### posteriors
+$P(H_1|+)=0.88$  
+$P(H_2|+)=0.12$
+
+#### expected losses  
+
+Expected loss for $d_1$:   
+$E[L(d_1)]=$loss if $d_1$ is right $\times$ posterior probability that $H_1$ is right $+$loss if $d_1$ is wrong $\times$ posterior probability that $H_2$ is right
+$E[L(d_1)]=0\times0.88 + 1000\times 0.12=120$
+
+Expected loss for $d_2$:   
+$E[L(d_2)]=$loss if $d_2$ is right $\times$ posterior probability that $H_2$ is right $+$loss if $d_2$ is wrong $\times$ posterior probability that $H_1$ is right
+$E[L(d_2)]=0\times0.12 + 10\times 0.88=8.8$
+
+Hence should decide that patient does have HIV
+
+Bayesian methods allow for the integration of losses into the decision making ramework easily  
+
+In Bayesian testing we minimise the posterior expected loss
+
+__Exercise__
+Suppose $w_1=100$ and $w_2=50$. Which decision minimises loss?
+```{r}
+ELd1=0*0.88 + 100*0.12
+ELd2=0*0.12 + 50*0.88
+c(ELd1,ELd2)
+```
+
+### Posterior probabilities of hypotheses and Bayes factors  
+
+__prior odds__=ratio of prior hypotheses we are considering  
+$$O[H_1:H_2]=\dfrac{P(H_1)}{P(H_2)}$$
+
+__posterior odds__=ratio of the two posterior probabilities of these hypotheses 
+
+\begin{aligned}
+PO[H_1:H_2]&=\dfrac{P(H_1|data)}{P(H_2|data)}\\
+\\
+&=\dfrac{\left(P(data|H_1)P(H_1)\right)/P(data)}{\left(P(data|H_2)P(H_2)\right)/P(data)}\\
+\\
+&=\dfrac{P(data|H_1)}{P(data|H_2)}\times\dfrac{P(H_1)}{P(H_2)}\\
+\\
+&=\text{Bayes Factor}\times\text{Prior Odds}\\
+\\
+PO[H_1:H_2]&=BF[H_1:H_2]\times O[H_1:H_2]
+
+\end{aligned}
+
